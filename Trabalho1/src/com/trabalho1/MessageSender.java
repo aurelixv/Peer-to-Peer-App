@@ -18,19 +18,19 @@ public class MessageSender extends Thread{
 
     public void run() {
         try {
+            System.out.println("Thread Sender iniciada com sucesso.");
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
             while(true) {
+                //System.out.print("Digite a mensagem a ser enviada: ");
                 String str = reader.readLine();
+
+                DatagramPacket messageOut = new DatagramPacket(str.getBytes(), str.length(), group, 6789);
+                s.send(messageOut);
 
                 if(str.equals("exit")) {
                     break;
                 }
-
-                DatagramPacket messageOut = new DatagramPacket(str.getBytes(), str.length(), group, 6789);
-                s.send(messageOut);
             }
-
         } catch (Exception e) {
             System.out.println("Erro na thread sender " + e);
         }

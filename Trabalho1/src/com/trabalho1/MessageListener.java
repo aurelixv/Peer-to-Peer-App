@@ -13,17 +13,22 @@ public class MessageListener extends Thread {
 
     public void run() {
         try {
+            System.out.println("Thread Listener iniciada com sucesso.");
             while(true) {
                 byte[] buffer = new byte[1000];
                 DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
                 s.receive(messageIn);
-                if((new String(messageIn.getData())) != "exit") {
-                    System.out.println("Received:" + new String(messageIn.getData()).trim());
+                String message = new String(messageIn.getData()).trim();
+
+                if(!message.equals("exit")) {
+                    System.out.println("Received: " + message);
                 }
                 else {
                     break;
                 }
             }
-        } catch (Exception e){}
+        } catch (Exception e){
+            System.out.println("Erro na thread listener " + e);
+        }
     }
 }
