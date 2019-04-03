@@ -9,7 +9,7 @@ public class MulticastPeer {
     public static void main(String args[]) {
 
 
-
+/*
         Message msg = new Message();
         msg.setPeerName("aurelio");
         msg.setPeerPort(112233);
@@ -22,6 +22,8 @@ public class MulticastPeer {
         System.out.println(decoded.getPeerName() + " " + decoded.getPeerPort());
 
         System.exit(1);
+
+ */
 
         // args give message contents and destination multicast group (e.g. "")
         MulticastSocket s = null;

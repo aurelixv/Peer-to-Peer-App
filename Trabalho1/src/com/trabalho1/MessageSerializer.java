@@ -22,11 +22,10 @@ public class MessageSerializer {
 
     public static Message decode(byte[] message) {
         ByteArrayInputStream bis = new ByteArrayInputStream(message);
-        ObjectInput in = null;
         Message decoded = null;
 
         try {
-            in = new ObjectInputStream(bis);
+            ObjectInputStream in = new ObjectInputStream(bis);
             decoded = (Message)in.readObject();
             in.close();
         }
@@ -37,21 +36,3 @@ public class MessageSerializer {
         return decoded;
     }
 }
-
-/*
-ByteArrayInputStream bis = new ByteArrayInputStream(yourBytes);
-ObjectInput in = null;
-try {
-  in = new ObjectInputStream(bis);
-  Object o = in.readObject();
-  ...
-} finally {
-  try {
-    if (in != null) {
-      in.close();
-    }
-  } catch (IOException ex) {
-    // ignore close exception
-  }
-}
- */
