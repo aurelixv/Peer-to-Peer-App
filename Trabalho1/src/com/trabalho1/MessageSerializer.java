@@ -1,8 +1,6 @@
 package com.trabalho1;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 public class MessageSerializer {
     public static byte[] encode(Message message) {
@@ -18,12 +16,25 @@ public class MessageSerializer {
         catch (Exception e) {
             System.out.println("Erro no encode da mensagem " + e);
         }
+
         return encoded;
     }
 
-    public static Message decode(String message) {
-        
-        return new Message();
+    public static Message decode(byte[] message) {
+        ByteArrayInputStream bis = new ByteArrayInputStream(message);
+        ObjectInput in = null;
+        Message decoded = null;
+
+        try {
+            in = new ObjectInputStream(bis);
+            decoded = (Message)in.readObject();
+            in.close();
+        }
+        catch (Exception e) {
+            System.out.println("Erro no decode da mensagem " + e);
+        }
+
+        return decoded;
     }
 }
 

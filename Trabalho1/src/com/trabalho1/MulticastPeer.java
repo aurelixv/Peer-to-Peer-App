@@ -14,7 +14,13 @@ public class MulticastPeer {
         msg.setPeerName("aurelio");
         msg.setPeerPort(112233);
 
-        System.out.println(MessageSerializer.encode(msg));
+        byte[] encoded = MessageSerializer.encode(msg);
+        Message decoded = MessageSerializer.decode(encoded);
+
+        System.out.println("Encoded: " + encoded);
+        System.out.println("Decoded: " + decoded);
+        System.out.println(decoded.getPeerName() + " " + decoded.getPeerPort());
+
         System.exit(1);
 
         // args give message contents and destination multicast group (e.g. "")
