@@ -6,33 +6,19 @@ import java.io.*;
 // IP: 228.5.6.7
 
 public class MulticastPeer {
-    public static void main(String args[]) {
 
+    private Message broadcastMessage;
 
-/*
-        Message msg = new Message();
-        msg.setPeerName("aurelio");
-        msg.setPeerPort(112233);
-
-        byte[] encoded = MessageSerializer.encode(msg);
-        Message decoded = MessageSerializer.decode(encoded);
-
-        System.out.println("Encoded: " + encoded);
-        System.out.println("Decoded: " + decoded);
-        System.out.println(decoded.getPeerName() + " " + decoded.getPeerPort());
-
-        System.exit(1);
-
- */
-
-        // args give message contents and destination multicast group (e.g. "")
+    public MulticastPeer(String ip, Message message) {
+        this.broadcastMessage = message;
         MulticastSocket s = null;
+
         try {
-            InetAddress group = InetAddress.getByName("228.5.6.7");
+            InetAddress group = InetAddress.getByName(ip);
             s = new MulticastSocket(6789);
             s.joinGroup(group);
-            MessageListener listener = new MessageListener(s);
-            MessageSender sender = new MessageSender(s, group);
+            MulticastListener listener = new MulticastListener(s);
+            MulticastSender sender = new MulticastSender(s, group, broadcastMessage);
 
             System.out.println("Iniciando as threads do multicasting...");
             sender.start();
@@ -53,4 +39,5 @@ public class MulticastPeer {
             if(s != null) s.close();
         }
     }
+
 }

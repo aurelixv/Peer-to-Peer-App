@@ -3,11 +3,11 @@ package com.trabalho1;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 
-public class MessageListener extends Thread {
+public class MulticastListener extends Thread {
 
     private MulticastSocket s;
 
-    public MessageListener(MulticastSocket s) {
+    public MulticastListener(MulticastSocket s) {
         this.s = s;
     }
 
@@ -18,14 +18,10 @@ public class MessageListener extends Thread {
                 byte[] buffer = new byte[1000];
                 DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
                 s.receive(messageIn);
-                String message = new String(messageIn.getData()).trim();
+                Message message = (Message) MessageSerializer.decode(messageIn.getData());
 
-                if(!message.equals("exit")) {
-                    System.out.println("Received: " + message);
-                }
-                else {
-                    break;
-                }
+                System.out.println(message.getPeerName() + " na porta " + message.getPeerPort());
+                System.out.println("Chave publica: " + message.getPublicKey().toString());
             }
         } catch (Exception e){
             System.out.println("Erro na thread listener " + e);
