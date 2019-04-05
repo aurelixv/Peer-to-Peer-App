@@ -5,9 +5,9 @@ import java.security.*;
 /**
  *
  */
-public class Signature {
+public class KeyPair {
 
-    private KeyPair pair;
+    private java.security.KeyPair pair;
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
@@ -15,33 +15,24 @@ public class Signature {
         Cria um par de chaves com o algoritmo RSA de 1024 bits, para depois extrair as
         respectivas chaves privada e publica.
      */
-    public Signature() {
+    public KeyPair() {
         try {
-            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA", "SUN");
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
             // Gera um aleatorio por meio de um algoritmo seguro
-            SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
             keyGen.initialize(1024, random);
             pair = keyGen.generateKeyPair();
             privateKey = pair.getPrivate();
             publicKey = pair.getPublic();
         } catch (Exception e) {
-            System.err.println("Nao foi possivel criar par de chaves. Erro: " + e.toString());
+            System.err.println("Nao foi possivel criar par de chaves " + e.toString());
         }
     }
 
     public PublicKey getPublicKey() {
         return this.publicKey;
     }
-
-    public void sign() {
-
+    public byte[] sign(Message broadcastMessage) {
+        return MessageSignature.sign(broadcastMessage.getMessage(), this.privateKey);
     }
-
-    public boolean verifySignature() {
-
-        return false;
-    }
-
-
-
 }
