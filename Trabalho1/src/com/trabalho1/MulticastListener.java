@@ -3,6 +3,8 @@ package com.trabalho1;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 
+import static com.trabalho1.MessageSerializer.*;
+
 public class MulticastListener extends Thread {
 
     private MulticastSocket s;
@@ -18,10 +20,12 @@ public class MulticastListener extends Thread {
                 byte[] buffer = new byte[1000];
                 DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
                 s.receive(messageIn);
-                Message message = (Message) MessageSerializer.decode(messageIn.getData());
+                Message message = decode(messageIn.getData());
 
                 System.out.println(message.getPeerName() + " na porta " + message.getPeerPort());
-                System.out.println("Chave publica: " + message.getPublicKey().toString());
+                System.out.println("Assinatura valida: " + MessageSignature.verify(message.getMessage(),
+                        message.getSignedMessage(),
+                        message.getPublicKey()));
             }
         } catch (Exception e){
             System.out.println("Erro na thread listener " + e);

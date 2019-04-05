@@ -7,6 +7,7 @@ public class Message implements Serializable {
     private String peerName;
     private int peerPort;
     private PublicKey publicKey;
+    private byte[] signedMessage;
 
     public void setPeerName(String name) {
         this.peerName = name;
@@ -17,6 +18,9 @@ public class Message implements Serializable {
     public void setPublicKey(PublicKey publicKey) {
         this.publicKey = publicKey;
     }
+    public void setSignedMessage(byte[] signedMessage) {
+        this.signedMessage = signedMessage;
+    }
 
     public String getPeerName() {
         return this.peerName;
@@ -26,5 +30,11 @@ public class Message implements Serializable {
     }
     public PublicKey getPublicKey() {
         return this.publicKey;
+    }
+    public byte[] getSignedMessage() {
+        return signedMessage;
+    }
+    public String getMessage() {
+        return this.getPeerName() + this.getPeerPort();
     }
 }

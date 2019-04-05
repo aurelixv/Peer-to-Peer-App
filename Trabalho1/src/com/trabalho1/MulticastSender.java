@@ -35,7 +35,7 @@ public class MulticastSender extends Thread{
 //                    break;
 //                }
 
-                this.sleep(1000);
+                this.sleep(5000);
             }
         } catch (Exception e) {
             System.out.println("Erro na thread sender " + e);
