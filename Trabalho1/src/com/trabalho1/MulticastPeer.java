@@ -8,35 +8,47 @@ import java.io.*;
 public class MulticastPeer {
 
     private Message broadcastMessage;
+    private MulticastSocket s;
+    private InetAddress group;
+    private MulticastListener listener;
+    private MulticastSender sender;
 
     public MulticastPeer(String ip, Message message) {
         this.broadcastMessage = message;
-        MulticastSocket s = null;
 
         try {
-            InetAddress group = InetAddress.getByName(ip);
+            group = InetAddress.getByName(ip);
             s = new MulticastSocket(6789);
             s.joinGroup(group);
-            MulticastListener listener = new MulticastListener(s);
-            MulticastSender sender = new MulticastSender(s, group, broadcastMessage);
+            listener = new MulticastListener(s);
+            sender = new MulticastSender(s, group, broadcastMessage);
 
             System.out.println("Iniciando as threads do multicasting...");
             sender.start();
             listener.start();
-            sender.join();
-            listener.join();
 
-            System.out.println("Encerrando conexoes...");
-            s.leaveGroup(group);
-            s.close();
         } catch(SocketException e) {
             System.out.println("Socket: " + e.getMessage());
         } catch(IOException e) {
             System.out.println("IO: " + e.getMessage());
-        } catch(InterruptedException e) {
+        }
+    }
+
+    public MulticastListener getListener() {
+        return listener;
+    }
+
+    public MulticastSender getSender() {
+        return sender;
+    }
+
+    public void endConnection() {
+        System.out.println("Encerrando conexoes...");
+        try {
+            s.leaveGroup(group);
+            s.close();
+        } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if(s != null) s.close();
         }
     }
 

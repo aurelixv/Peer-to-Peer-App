@@ -39,6 +39,7 @@ public class MulticastSender extends Thread{
             }
         } catch (Exception e) {
             System.out.println("Erro na thread sender " + e);
+            e.printStackTrace();
         }
     }
 }
