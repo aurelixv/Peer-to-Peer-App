@@ -36,18 +36,4 @@ public class MessageSerializer {
         return decoded;
     }
 
-    public static void debug() {
-        Message msg = new Message();
-        msg.setPeerName("aurelio");
-        msg.setPeerPort(112233);
-
-        byte[] encoded = MessageSerializer.encode(msg);
-        Message decoded = MessageSerializer.decode(encoded);
-
-        System.out.println("Encoded: " + encoded);
-        System.out.println("Decoded: " + decoded);
-        System.out.println(decoded.getPeerName() + " " + decoded.getPeerPort());
-
-        System.exit(1);
-    }
 }

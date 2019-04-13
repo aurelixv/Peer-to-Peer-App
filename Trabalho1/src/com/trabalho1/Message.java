@@ -9,11 +9,13 @@ public class Message implements Serializable {
     private PublicKey publicKey;
     private byte[] signedMessage;
 
+    public Message() {
+        this.peerName = PeerInfo.name;
+        this.peerPort = PeerInfo.port;
+    }
+
     public void setPeerName(String name) {
         this.peerName = name;
-    }
-    public void setPeerPort(int port) {
-        this.peerPort = port;
     }
     public void setPublicKey(PublicKey publicKey) {
         this.publicKey = publicKey;

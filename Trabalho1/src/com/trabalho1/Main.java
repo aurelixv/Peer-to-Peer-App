@@ -15,8 +15,6 @@ public class Main {
         KeyPair keyPair = new KeyPair();
 
         Message broadcastMessage = new Message();
-        broadcastMessage.setPeerName(args[0]);
-        broadcastMessage.setPeerPort(Integer.parseInt(args[1]));
         broadcastMessage.setPublicKey(keyPair.getPublicKey());
         broadcastMessage.setSignedMessage(keyPair.sign(broadcastMessage));
 
@@ -34,7 +32,22 @@ public class Main {
 
         }
 
-        System.out.println("Peers conhecidos: " + peers.countPeers());
+        System.out.println("\n\n\n******Peers conhecidos: " + peers.countPeers() + "******\n\n\n");
+
+        if(peers.isMasterSet() == false) {
+            System.out.println("Virando mestre...");
+            Message masterMessage = new Message();
+            masterMessage.setPeerName("Mestre");
+            masterMessage.setPublicKey(keyPair.getPublicKey());
+            masterMessage.setSignedMessage(keyPair.sign(masterMessage));
+            multicastPeer.createMaster(masterMessage);
+        }
+
+        try {
+            multicastPeer.getSender().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         multicastPeer.endConnection();
     }

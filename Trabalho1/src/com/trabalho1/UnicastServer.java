@@ -5,11 +5,11 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class UnicastListener extends Thread{
+public class UnicastServer extends Thread{
 
     private ServerSocket serverSocket;
 
-    public UnicastListener(int port) throws IOException {
+    public UnicastServer(int port) throws IOException {
         serverSocket = new ServerSocket(port);
     }
 

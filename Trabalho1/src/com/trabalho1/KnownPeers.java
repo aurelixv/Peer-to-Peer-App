@@ -22,6 +22,13 @@ public class KnownPeers {
         }
     }
 
+    public boolean isMasterSet() {
+        if(peers.containsKey("Mestre")) {
+            return true;
+        }
+        return false;
+    }
+
     public PublicKey getPublicKeyFromPeer(String peerName) {
         if(peers.containsKey(peerName)) {
             return peers.get(peerName).getPublicKey();
@@ -37,7 +44,15 @@ public class KnownPeers {
     }
 
     public int countPeers() {
-        return this.peers.size();
+        int count = 0;
+
+        for (String i: peers.keySet()) {
+            if(i != "Mestre") {
+                count += 1;
+            }
+        }
+
+        return count;
     }
 
 }

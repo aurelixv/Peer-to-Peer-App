@@ -38,4 +38,8 @@ public class MulticastSender extends Thread{
         this.kill = kill;
     }
 
+    public void setBroadcastMessage(Message message) {
+        this.broadcastMessage = message;
+    }
+
 }

@@ -13,6 +13,7 @@ public class MulticastPeer {
     private InetAddress group;
     private MulticastListener listener;
     private MulticastSender sender;
+    private MulticastSender master;
 
     public MulticastPeer(String ip, Message message, BlockingQueue<Message> listenerQueue) {
         this.broadcastMessage = message;
@@ -35,24 +36,71 @@ public class MulticastPeer {
         }
     }
 
-    public MulticastListener getListener() {
-        return listener;
+//    public MulticastListener getListener() {
+//        return listener;
+//    }
+//
+
+    public void createMaster(Message message) {
+        master = new MulticastSender(s, group, message);
+        master.run();
     }
 
     public MulticastSender getSender() {
         return sender;
     }
 
+    public void killMaster(boolean kill) {
+        if(kill) {
+            try {
+                master.killThread(true);
+                master.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void killListener(boolean kill) {
+        if(kill) {
+            try {
+                listener.killThread(true);
+                listener.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void killSender(boolean kill) {
+        if(kill) {
+            try {
+                sender.killThread(true);
+                sender.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void endConnection() {
         System.out.println("Encerrando conexoes...");
-        sender.killThread(true);
-        try {
-            sender.join();
-        } catch (Exception e) {
 
+        if(listener.isAlive()) {
+            System.out.println("Matando thread multicast listener...");
+            killListener(true);
         }
 
-        this.getListener().interrupt();
+        if(sender.isAlive()) {
+            System.out.println("Matando thread multicast sender...");
+            killSender(true);
+        }
+
+        if(master.isAlive()) {
+            System.out.println("Matando thread multicast master...");
+            killMaster(true);
+        }
+
         try {
             s.leaveGroup(group);
             s.close();

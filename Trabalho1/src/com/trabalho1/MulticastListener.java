@@ -10,17 +10,19 @@ public class MulticastListener extends Thread {
 
     private MulticastSocket s;
     private BlockingQueue<Message> listenerQueue;
+    private boolean kill;
 
     public MulticastListener(MulticastSocket s, BlockingQueue<Message> listenerQueue) {
         this.s = s;
         this.listenerQueue = listenerQueue;
+        this.kill = false;
     }
 
     public void run() {
         try {
             System.out.println("Thread Listener iniciada com sucesso.");
 
-            while(true) {
+            while(kill == false) {
                 byte[] buffer = new byte[1000];
                 DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
                 s.receive(messageIn);
@@ -40,6 +42,10 @@ public class MulticastListener extends Thread {
             System.out.println("Erro na thread listener " + e);
             e.printStackTrace();
         }
+    }
+
+    public void killThread(boolean kill) {
+        this.kill = kill;
     }
 
 }
