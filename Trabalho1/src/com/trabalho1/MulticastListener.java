@@ -2,17 +2,18 @@ package com.trabalho1;
 
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
+import java.util.concurrent.BlockingQueue;
 
 import static com.trabalho1.MessageSerializer.*;
 
 public class MulticastListener extends Thread {
 
     private MulticastSocket s;
-    private KnownPeers peers;
+    private BlockingQueue<Message> listenerQueue;
 
-    public MulticastListener(MulticastSocket s) {
+    public MulticastListener(MulticastSocket s, BlockingQueue<Message> listenerQueue) {
         this.s = s;
-        peers = new KnownPeers();
+        this.listenerQueue = listenerQueue;
     }
 
     public void run() {
@@ -25,7 +26,10 @@ public class MulticastListener extends Thread {
                 s.receive(messageIn);
                 Message message = decode(messageIn.getData());
 
-                peers.verifyPeer(message);
+                // Se nao for ele mesmo
+                if(message.getPeerPort() != PeerInfo.port) {
+                    listenerQueue.put(message);
+                }
 
                 System.out.println(message.getPeerName() + " na porta " + message.getPeerPort());
                 System.out.println("Assinatura valida: " + MessageSignature.verify(message.getMessage(),
@@ -36,11 +40,6 @@ public class MulticastListener extends Thread {
             System.out.println("Erro na thread listener " + e);
             e.printStackTrace();
         }
-    }
-
-    public KnownPeers getKnownPeers() {
-
-        return peers;
     }
 
 }
