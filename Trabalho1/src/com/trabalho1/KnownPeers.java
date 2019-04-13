@@ -29,11 +29,15 @@ public class KnownPeers {
         return null;
     }
 
-    public Integer getPortFromPeer(String peerName) {
+    public int getPortFromPeer(String peerName) {
         if(peers.containsKey(peerName)) {
             return peers.get(peerName).getPeerPort();
         }
         return 0;
+    }
+
+    public int countPeers() {
+        return this.peers.size();
     }
 
 }
