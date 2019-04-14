@@ -9,16 +9,24 @@ public class UnicastServer extends Thread{
 
     private ServerSocket serverSocket;
 
-    public UnicastServer(int port) throws IOException {
-        serverSocket = new ServerSocket(port);
+    public UnicastServer() {
+        try {
+            serverSocket = new ServerSocket(PeerInfo.port);
+            System.out.println("\nServidor unicast mestre inicializado.\n");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void run() {
         try {
-            Socket client = serverSocket.accept();
-            InetAddress addr = client.getInetAddress();
-            int clientPort = client.getPort();
-            System.out.println("Conexao com IP: " + addr + " Porta: " + clientPort);
+            while(true) {
+                Socket client = serverSocket.accept();
+                InetAddress addr = client.getInetAddress();
+                int clientPort = client.getPort();
+                System.out.println("\nConexao com IP: " + addr + " Porta: " + clientPort + "\n");
+                new UnicastConnection(client).start();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -5,7 +5,7 @@ import java.io.*;
 
 // IP: 228.5.6.7
 
-public class MulticastPeer {
+public class MulticastHandler {
 
     private Message broadcastMessage;
     private MulticastSocket s;
@@ -14,7 +14,7 @@ public class MulticastPeer {
     private MulticastSender sender;
     private MulticastSender master;
 
-    public MulticastPeer(String ip, Message message) {
+    public MulticastHandler(String ip, Message message) {
         this.broadcastMessage = message;
 
         try {
@@ -42,7 +42,7 @@ public class MulticastPeer {
 
     public void createMaster(Message message) {
         master = new MulticastSender(s, group, message);
-        master.run();
+        master.start();
     }
 
     public MulticastSender getSender() {
