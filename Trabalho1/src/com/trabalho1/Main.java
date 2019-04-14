@@ -41,7 +41,7 @@ public class Main {
         if(peers.isMaster()) {
             System.out.println("\nIniciando servidor mestre...\n");
             UnicastServer server = new UnicastServer();
-            server.run();
+            server.start();
             try {
                 server.join();
             } catch (Exception e) {
@@ -50,19 +50,14 @@ public class Main {
         }
         // Caso contrario, vira um cliente
         else {
+            System.out.println("\nIniciando conexao com o mestre...\n");
             UnicastClient client = new UnicastClient(peers.getPortFromPeer(PeerInfo.master));
-            client.run();
+            client.start();
             try {
                 client.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
-
-        try {
-            multicastHandler.getSender().join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
         multicastHandler.endConnection();
