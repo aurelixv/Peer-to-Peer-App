@@ -2,19 +2,17 @@ package com.trabalho1;
 
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
-import java.util.concurrent.BlockingQueue;
-
 import static com.trabalho1.MessageSerializer.*;
 
 public class MulticastListener extends Thread {
 
     private MulticastSocket s;
-    private BlockingQueue<Message> listenerQueue;
+    private KnownPeers peers;
     private boolean kill;
 
-    public MulticastListener(MulticastSocket s, BlockingQueue<Message> listenerQueue) {
+    public MulticastListener(MulticastSocket s) {
         this.s = s;
-        this.listenerQueue = listenerQueue;
+        this.peers = new KnownPeers();
         this.kill = false;
     }
 
@@ -22,15 +20,20 @@ public class MulticastListener extends Thread {
         try {
             System.out.println("Thread Listener iniciada com sucesso.");
 
-            while(kill == false) {
+            while(!kill) {
                 byte[] buffer = new byte[1000];
                 DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
                 s.receive(messageIn);
                 Message message = decode(messageIn.getData());
 
-                // Se nao for ele mesmo
                 if(message.getPeerPort() != PeerInfo.port) {
-                    listenerQueue.put(message);
+                    peers.verifyPeer(message);
+                }
+
+                if(peers.countPeers() >= 3) {
+                    synchronized (this) {
+                        this.notify();
+                    }
                 }
 
                 System.out.println(message.getPeerName() + " na porta " + message.getPeerPort());
@@ -46,6 +49,10 @@ public class MulticastListener extends Thread {
 
     public void killThread(boolean kill) {
         this.kill = kill;
+    }
+
+    public KnownPeers getPeers() {
+        return this.peers;
     }
 
 }

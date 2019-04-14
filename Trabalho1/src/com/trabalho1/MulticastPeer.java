@@ -2,7 +2,6 @@ package com.trabalho1;
 
 import java.net.*;
 import java.io.*;
-import java.util.concurrent.BlockingQueue;
 
 // IP: 228.5.6.7
 
@@ -15,14 +14,14 @@ public class MulticastPeer {
     private MulticastSender sender;
     private MulticastSender master;
 
-    public MulticastPeer(String ip, Message message, BlockingQueue<Message> listenerQueue) {
+    public MulticastPeer(String ip, Message message) {
         this.broadcastMessage = message;
 
         try {
             group = InetAddress.getByName(ip);
             s = new MulticastSocket(6789);
             s.joinGroup(group);
-            listener = new MulticastListener(s, listenerQueue);
+            listener = new MulticastListener(s);
             sender = new MulticastSender(s, group, broadcastMessage);
 
             System.out.println("Iniciando as threads do multicasting...");
@@ -36,10 +35,10 @@ public class MulticastPeer {
         }
     }
 
-//    public MulticastListener getListener() {
-//        return listener;
-//    }
-//
+    public MulticastListener getListener() {
+        return listener;
+    }
+
 
     public void createMaster(Message message) {
         master = new MulticastSender(s, group, message);
@@ -86,17 +85,17 @@ public class MulticastPeer {
     public void endConnection() {
         System.out.println("Encerrando conexoes...");
 
-        if(listener.isAlive()) {
+        if(listener != null) {
             System.out.println("Matando thread multicast listener...");
             killListener(true);
         }
 
-        if(sender.isAlive()) {
+        if(sender != null) {
             System.out.println("Matando thread multicast sender...");
             killSender(true);
         }
 
-        if(master.isAlive()) {
+        if(master != null) {
             System.out.println("Matando thread multicast master...");
             killMaster(true);
         }
