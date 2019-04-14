@@ -52,12 +52,19 @@ public class Main {
         else {
             System.out.println("\nIniciando conexao com o mestre...\n");
             UnicastClient client = new UnicastClient(peers.getPortFromPeer(PeerInfo.master));
+            WatchDog watchDog = multicastHandler.createWatchDog();
             client.start();
-            try {
-                client.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            synchronized (watchDog) {
+                try {
+                    watchDog.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+            client.killThread(true);
+
+            // Adicionar aqui logica de nova eleicao, apos mestre morrer.
+
         }
 
         multicastHandler.endConnection();

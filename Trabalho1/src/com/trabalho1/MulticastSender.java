@@ -21,7 +21,7 @@ public class MulticastSender extends Thread{
     public void run() {
         try {
             System.out.println("Thread Sender iniciada com sucesso.");
-            while(kill == false) {
+            while(!kill) {
                 byte[] message = MessageSerializer.encode(broadcastMessage);
                 DatagramPacket messageOut = new DatagramPacket(message, message.length, group, 6789);
                 s.send(messageOut);
@@ -36,10 +36,6 @@ public class MulticastSender extends Thread{
 
     public void killThread(boolean kill) {
         this.kill = kill;
-    }
-
-    public void setBroadcastMessage(Message message) {
-        this.broadcastMessage = message;
     }
 
 }

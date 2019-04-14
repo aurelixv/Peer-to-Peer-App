@@ -13,6 +13,7 @@ public class MulticastHandler {
     private MulticastListener listener;
     private MulticastSender sender;
     private MulticastSender master;
+    private WatchDog watchDog;
 
     public MulticastHandler(String ip, Message message) {
         this.broadcastMessage = message;
@@ -39,6 +40,11 @@ public class MulticastHandler {
         return listener;
     }
 
+    public WatchDog createWatchDog() {
+        watchDog = new WatchDog(s);
+        watchDog.start();
+        return watchDog;
+    }
 
     public void createMaster(Message message) {
         master = new MulticastSender(s, group, message);
