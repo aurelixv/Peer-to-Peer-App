@@ -1,5 +1,6 @@
 package com.trabalho1;
 
+import java.lang.reflect.GenericDeclaration;
 import java.net.*;
 import java.io.*;
 
@@ -23,7 +24,7 @@ public class MulticastHandler {
             s = new MulticastSocket(6789);
             s.joinGroup(group);
             listener = new MulticastListener(s);
-            sender = new MulticastSender(s, group, broadcastMessage);
+            sender = new MulticastSender(s, group, broadcastMessage, 5000);
 
             System.out.println("Iniciando as threads do multicasting...");
             sender.start();
@@ -47,7 +48,7 @@ public class MulticastHandler {
     }
 
     public void createMaster(Message message) {
-        master = new MulticastSender(s, group, message);
+        master = new MulticastSender(s, group, message, 1000);
         master.start();
     }
 

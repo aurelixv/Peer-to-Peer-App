@@ -10,12 +10,14 @@ public class MulticastSender extends Thread{
     private InetAddress group;
     private Message broadcastMessage;
     private boolean kill;
+    private int timer;
 
-    public MulticastSender(MulticastSocket s, InetAddress group, Message message) {
+    public MulticastSender(MulticastSocket s, InetAddress group, Message message, int timer) {
         this.kill = false;
         this.s = s;
         this.group = group;
         this.broadcastMessage = message;
+        this.timer = timer;
     }
 
     public void run() {
@@ -26,7 +28,7 @@ public class MulticastSender extends Thread{
                 DatagramPacket messageOut = new DatagramPacket(message, message.length, group, 6789);
                 s.send(messageOut);
 
-                this.sleep(5000);
+                this.sleep(timer);
             }
         } catch (Exception e) {
             System.out.println("Erro na thread sender " + e);
