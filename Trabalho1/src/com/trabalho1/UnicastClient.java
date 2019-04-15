@@ -23,6 +23,8 @@ public class UnicastClient extends Thread {
         try {
             System.out.println("\nEscravo " + PeerInfo.name + " se conectando com o mestre na porta " + port + "...\n");
             client = new Socket(hostName, port);
+            String input;
+            String output;
 
             // Para enviar as mensagens para o mestre
             PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -31,7 +33,7 @@ public class UnicastClient extends Thread {
 
             out.println("teste porra");
 
-            while(!kill) {
+            while((input = in.readLine()) != null) {
                 // Comunica com o mestre
 
 

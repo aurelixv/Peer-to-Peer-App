@@ -9,7 +9,7 @@ public class KnownPeers {
     private Map<String, Message> peers;
 
     public KnownPeers() {
-        peers = new Hashtable();
+        peers = new Hashtable<>();
     }
 
     public void verifyPeer(Message message) {
@@ -53,6 +53,15 @@ public class KnownPeers {
             return peers.size() - 1;
         }
         return peers.size();
+    }
+
+    public void removePeer(int port) {
+        Map<String, Message> aux = new Hashtable<>(peers);
+        for (String i: aux.keySet()) {
+            if(peers.get(i).getPeerPort() == port) {
+                peers.remove(i);
+            }
+        }
     }
 
 }

@@ -3,6 +3,7 @@ package com.trabalho1;
 import java.lang.reflect.GenericDeclaration;
 import java.net.*;
 import java.io.*;
+import java.security.PublicKey;
 
 // IP: 228.5.6.7
 
@@ -41,8 +42,8 @@ public class MulticastHandler {
         return listener;
     }
 
-    public WatchDog createWatchDog() {
-        watchDog = new WatchDog(s);
+    public WatchDog createWatchDog(PublicKey masterPublicKey) {
+        watchDog = new WatchDog(s, masterPublicKey);
         watchDog.start();
         return watchDog;
     }
