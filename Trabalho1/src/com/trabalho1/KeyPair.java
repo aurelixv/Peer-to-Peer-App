@@ -32,6 +32,7 @@ public class KeyPair {
     public PublicKey getPublicKey() {
         return this.publicKey;
     }
+    public PrivateKey getPrivateKey() { return this.privateKey; }
     public byte[] sign(Message broadcastMessage) {
         return MessageSignature.sign(broadcastMessage.getMessage(), this.privateKey);
     }

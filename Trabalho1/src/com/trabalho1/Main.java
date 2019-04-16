@@ -42,7 +42,7 @@ public class Main {
             // Se for o mestre, vira um servidor
             if (peers.isMaster()) {
                 System.out.println("\nIniciando servidor mestre...\n");
-                UnicastServer server = new UnicastServer();
+                UnicastServer server = new UnicastServer(keyPair.getPrivateKey());
                 server.start();
                 try {
                     server.join();
@@ -53,7 +53,8 @@ public class Main {
             // Caso contrario, vira um cliente
             else {
                 System.out.println("\nIniciando conexao com o mestre...\n");
-                UnicastClient client = new UnicastClient(peers.getPortFromPeer(PeerInfo.master));
+                UnicastClient client = new UnicastClient(peers.getPortFromPeer(PeerInfo.master),
+                        peers.getPublicKeyFromPeer(PeerInfo.master));
                 WatchDog watchDog = multicastHandler.createWatchDog(peers.getPublicKeyFromPeer(PeerInfo.master));
                 client.start();
                 synchronized (watchDog) {

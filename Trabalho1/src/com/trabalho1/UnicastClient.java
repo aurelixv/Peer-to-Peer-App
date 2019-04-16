@@ -1,10 +1,9 @@
 package com.trabalho1;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.security.PublicKey;
+import java.util.Random;
 
 public class UnicastClient extends Thread {
 
@@ -12,38 +11,50 @@ public class UnicastClient extends Thread {
     private String hostName;
     private int port;
     private boolean kill;
+    private PublicKey masterPublicKey;
 
-    public UnicastClient(int port) {
+    public UnicastClient(int port, PublicKey masterPublicKey) {
         this.hostName = "127.0.0.1";
         this.port = port;
         this.kill = false;
+        this.masterPublicKey = masterPublicKey;
     }
 
     public void run() {
         try {
             System.out.println("\nEscravo " + PeerInfo.name + " se conectando com o mestre na porta " + port + "...\n");
             client = new Socket(hostName, port);
-            String input;
-            String output;
 
             // Para enviar as mensagens para o mestre
             PrintWriter out = new PrintWriter(client.getOutputStream(), true);
             // Para receber as mensagens do mestre
-            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            DataInputStream in = new DataInputStream(client.getInputStream());
 
-            out.println("teste porra");
+            int encodedMessageLength = 0;
 
-            while((input = in.readLine()) != null) {
+            while(!kill) {
                 // Comunica com o mestre
-
-
-
                 try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    break;
+                    byte[] encodedMessage = new byte[in.readInt()];
+                    in.readFully(encodedMessage, 0, encodedMessage.length);
+                    Message message = MessageSerializer.decode(encodedMessage);
+                    if (MessageSignature.verify(message.getCommand(), message.getSignedMessage(), masterPublicKey)) {
+                        System.out.println("Mestre enviou o comando: " + message.getCommand());
+                        if(message.getCommand().equals("tempo")) {
+                            int clock = new Random().nextInt() % 10;
+                            System.out.println("Enviando tempo local para o mestre: " + clock);
+                            out.println(clock);
+                        } else {
+                            System.out.println("Ajuste requisitado pelo mestre: " + message.getCommand());
+                        }
+                    } else {
+                        System.out.println("Erro ao validar assinatura digital do mestre.");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Erro na comunicacao com o mestre " + e);
+                    kill = true;
                 }
+
             }
         } catch (IOException e) {
             e.printStackTrace();

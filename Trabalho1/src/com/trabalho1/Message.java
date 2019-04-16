@@ -8,6 +8,7 @@ public class Message implements Serializable {
     private int peerPort;
     private PublicKey publicKey;
     private byte[] signedMessage;
+    private String command;
 
     public Message() {
         this.peerName = PeerInfo.name;
@@ -22,6 +23,9 @@ public class Message implements Serializable {
     }
     public void setSignedMessage(byte[] signedMessage) {
         this.signedMessage = signedMessage;
+    }
+    public void setCommand(String command) {
+        this.command = command;
     }
 
     public String getPeerName() {
@@ -38,5 +42,8 @@ public class Message implements Serializable {
     }
     public String getMessage() {
         return this.getPeerName() + this.getPeerPort();
+    }
+    public String getCommand() {
+        return this.command;
     }
 }

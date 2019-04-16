@@ -1,6 +1,5 @@
 package com.trabalho1;
 
-import java.lang.reflect.GenericDeclaration;
 import java.net.*;
 import java.io.*;
 import java.security.PublicKey;
