@@ -33,7 +33,7 @@ public class KeyPair {
         return this.publicKey;
     }
     public PrivateKey getPrivateKey() { return this.privateKey; }
-    public byte[] sign(Message broadcastMessage) {
-        return MessageSignature.sign(broadcastMessage.getMessage(), this.privateKey);
+    public byte[] sign(String broadcastMessage) {
+        return MessageSignature.sign(broadcastMessage.getBroadcastMessage(), this.privateKey);
     }
 }

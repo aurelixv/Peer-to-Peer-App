@@ -37,7 +37,7 @@ public class WatchDog extends Thread{
                 Message message = decode(messageIn.getData());
 
                 if(message.getPeerName().equals(PeerInfo.master)) {
-                    if(MessageSignature.verify(message.getMessage(), message.getSignedMessage(), masterPublicKey)) {
+                    if(MessageSignature.verify(message.getBroadcastMessage(), message.getSignedMessage(), masterPublicKey)) {
                         System.out.println("MESTRE VIVO");
                         oldTime = LocalTime.now(clock);
                     } else {

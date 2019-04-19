@@ -16,15 +16,16 @@ public class Main {
 
         KnownPeers peers = multicastHandler.getListener().getPeers();
 
-        while(!kill) {
-            System.out.println("\n******Esperando peers se conectarem******\n");
-            synchronized (multicastHandler.getListener()) {
-                try {
-                    multicastHandler.getListener().wait();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        System.out.println("\n******Esperando peers se conectarem******\n");
+        synchronized (multicastHandler.getListener()) {
+            try {
+                multicastHandler.getListener().wait();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
+
+        while(!kill) {
 
             System.out.println("\n\n\n******Peers conhecidos: " + peers.countPeers() + "******\n\n\n");
 

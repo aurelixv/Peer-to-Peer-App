@@ -9,6 +9,7 @@ public class Message implements Serializable {
     private PublicKey publicKey;
     private byte[] signedMessage;
     private String command;
+    private String message;
 
     public Message() {
         this.peerName = PeerInfo.name;
@@ -27,6 +28,9 @@ public class Message implements Serializable {
     public void setCommand(String command) {
         this.command = command;
     }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public String getPeerName() {
         return this.peerName;
@@ -40,9 +44,9 @@ public class Message implements Serializable {
     public byte[] getSignedMessage() {
         return signedMessage;
     }
-    public String getMessage() {
-        return this.getPeerName() + this.getPeerPort();
-    }
+    //public String getBroadcastMessage() {
+    //    return this.getPeerName() + this.getPeerPort();
+    //}
     public String getCommand() {
         return this.command;
     }

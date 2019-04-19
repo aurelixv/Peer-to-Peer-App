@@ -59,7 +59,9 @@ public class UnicastConnection extends Thread {
             }
 
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("Erro no socket.");
+            clockSyncAlgorithm.decrementConnectedPeers();
         }
     }
 

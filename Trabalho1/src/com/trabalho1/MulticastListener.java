@@ -37,7 +37,7 @@ public class MulticastListener extends Thread {
                 }
 
 //                System.out.println(message.getPeerName() + " na porta " + message.getPeerPort());
-//                System.out.println("Assinatura valida: " + MessageSignature.verify(message.getMessage(),
+//                System.out.println("Assinatura valida: " + MessageSignature.verify(message.getBroadcastMessage(),
 //                        message.getSignedMessage(),
 //                        message.getPublicKey()));
             }

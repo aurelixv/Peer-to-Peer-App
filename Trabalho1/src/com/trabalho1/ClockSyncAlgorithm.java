@@ -17,10 +17,10 @@ public class ClockSyncAlgorithm extends Thread {
     public void run() {
 
         // Esperando escravos se conectarem
-        while(connectedPeers == 0) {
+        while(connectedPeers < 3) {
             try {
                 System.out.println("[ ClockSync ] Esperando escravos se conectarem...");
-                sleep(100);
+                sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -50,5 +50,11 @@ public class ClockSyncAlgorithm extends Thread {
 
     public int getAdjustment() {
         return this.adjustment;
+    }
+
+    public void decrementConnectedPeers() {
+        if(connectedPeers > 0) {
+            this.connectedPeers -= 1;
+        }
     }
 }
