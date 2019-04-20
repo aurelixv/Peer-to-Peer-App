@@ -38,7 +38,7 @@ public class UnicastClient extends Thread {
                     byte[] encodedMessage = new byte[in.readInt()];
                     in.readFully(encodedMessage, 0, encodedMessage.length);
                     Message message = MessageSerializer.decode(encodedMessage);
-                    if (MessageSignature.verify(message.getCommand(), message.getSignedMessage(), masterPublicKey)) {
+                    if (MessageSignature.verify(message.getUnicastMessage(), message.getSignedMessage(), masterPublicKey)) {
                         System.out.println("Mestre enviou o comando: " + message.getCommand());
                         if(message.getCommand().equals("tempo")) {
                             int clock = new Random().nextInt() % 10;

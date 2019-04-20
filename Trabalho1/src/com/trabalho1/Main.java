@@ -10,9 +10,9 @@ public class Main {
 
         Message broadcastMessage = new Message();
         broadcastMessage.setPublicKey(keyPair.getPublicKey());
-        broadcastMessage.setSignedMessage(keyPair.sign(broadcastMessage));
+        broadcastMessage.setSignedMessage(keyPair.sign(broadcastMessage.getBroadcastMessage()));
 
-        MulticastHandler multicastHandler = new MulticastHandler(PeerInfo.ip, broadcastMessage);
+        MulticastHandler multicastHandler = new MulticastHandler(PeerInfo.ip, broadcastMessage, keyPair);
 
         KnownPeers peers = multicastHandler.getListener().getPeers();
 
@@ -29,21 +29,17 @@ public class Main {
 
             System.out.println("\n\n\n******Peers conhecidos: " + peers.countPeers() + "******\n\n\n");
 
-            if (!peers.isMasterSet()) {
-                System.out.println("\nVirando mestre...\n");
-                Message masterMessage = new Message();
-                masterMessage.setPeerName(PeerInfo.master);
-                masterMessage.setPublicKey(keyPair.getPublicKey());
-                masterMessage.setSignedMessage(keyPair.sign(masterMessage));
-                multicastHandler.createMaster(masterMessage);
-            } else {
-                System.out.println("\nMestre na porta: " + peers.getPortFromPeer(PeerInfo.master) + "\n");
-            }
+            System.out.println("Iniciando eleicao...");
+            peers.startElection();
 
             // Se for o mestre, vira um servidor
-            if (peers.isMaster()) {
+            if (PeerInfo.isMaster && !peers.isMasterSet()) {
+                System.out.println("\nVirando mestre...\n");
+                Message masterMessage = new Message();
+                masterMessage.setPublicKey(keyPair.getPublicKey());
+                multicastHandler.createMaster(masterMessage);
                 System.out.println("\nIniciando servidor mestre...\n");
-                UnicastServer server = new UnicastServer(keyPair.getPrivateKey());
+                UnicastServer server = new UnicastServer(keyPair);
                 server.start();
                 try {
                     server.join();
@@ -53,6 +49,16 @@ public class Main {
             }
             // Caso contrario, vira um cliente
             else {
+
+                while(!peers.isMasterSet()) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                System.out.println("\nMestre na porta: " + peers.getPortFromPeer(PeerInfo.master) + "\n");
                 System.out.println("\nIniciando conexao com o mestre...\n");
                 UnicastClient client = new UnicastClient(peers.getPortFromPeer(PeerInfo.master),
                         peers.getPublicKeyFromPeer(PeerInfo.master));

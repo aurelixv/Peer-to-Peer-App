@@ -7,7 +7,6 @@ import java.security.*;
  */
 public class KeyPair {
 
-    private java.security.KeyPair pair;
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
@@ -21,7 +20,7 @@ public class KeyPair {
             // Gera um aleatorio por meio de um algoritmo seguro
             SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
             keyGen.initialize(1024, random);
-            pair = keyGen.generateKeyPair();
+            java.security.KeyPair pair = keyGen.generateKeyPair();
             privateKey = pair.getPrivate();
             publicKey = pair.getPublic();
         } catch (Exception e) {
@@ -32,8 +31,7 @@ public class KeyPair {
     public PublicKey getPublicKey() {
         return this.publicKey;
     }
-    public PrivateKey getPrivateKey() { return this.privateKey; }
-    public byte[] sign(String broadcastMessage) {
-        return MessageSignature.sign(broadcastMessage.getBroadcastMessage(), this.privateKey);
+    public byte[] sign(String message) {
+        return MessageSignature.sign(message, this.privateKey);
     }
 }

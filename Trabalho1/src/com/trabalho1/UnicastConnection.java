@@ -2,19 +2,18 @@ package com.trabalho1;
 
 import java.io.*;
 import java.net.Socket;
-import java.security.PrivateKey;
 import java.util.concurrent.BlockingQueue;
 
 public class UnicastConnection extends Thread {
 
     private Socket client;
-    private PrivateKey masterPrivateKey;
+    private KeyPair keyPair;
     private BlockingQueue<Integer> messageQueue;
     private ClockSyncAlgorithm clockSyncAlgorithm;
 
-    public UnicastConnection(Socket client, PrivateKey masterPrivateKey,
+    public UnicastConnection(Socket client, KeyPair keyPair,
                              BlockingQueue<Integer> messageQueue, ClockSyncAlgorithm clockSyncAlgorithm) {
-        this.masterPrivateKey = masterPrivateKey;
+        this.keyPair = keyPair;
         this.client = client;
         this.messageQueue = messageQueue;
         this.clockSyncAlgorithm = clockSyncAlgorithm;
@@ -33,7 +32,8 @@ public class UnicastConnection extends Thread {
             while(true) {
                 Message message = new Message();
                 message.setCommand("tempo");
-                message.setSignedMessage(MessageSignature.sign(message.getCommand(), masterPrivateKey));
+                message.setTime();
+                message.setSignedMessage(keyPair.sign(message.getUnicastMessage()));
                 byte [] encodedMessage = MessageSerializer.encode(message);
                 // Envia para o escravo a solicitacao de tempo
                 out.writeInt(encodedMessage.length);
@@ -52,7 +52,7 @@ public class UnicastConnection extends Thread {
                 int adjustment = clockSyncAlgorithm.getAdjustment();
                 System.out.println("Ajuste a ser feito: " + adjustment);
                 message.setCommand("ajuste " + adjustment);
-                message.setSignedMessage(MessageSignature.sign(message.getCommand(), masterPrivateKey));
+                message.setSignedMessage(keyPair.sign(message.getUnicastMessage()));
                 encodedMessage = MessageSerializer.encode(message);
                 out.writeInt(encodedMessage.length);
                 out.write(encodedMessage);

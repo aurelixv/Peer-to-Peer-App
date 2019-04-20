@@ -11,24 +11,28 @@ public class MulticastSender extends Thread{
     private Message broadcastMessage;
     private boolean kill;
     private int timer;
+    private KeyPair keyPair;
 
-    public MulticastSender(MulticastSocket s, InetAddress group, Message message, int timer) {
+    public MulticastSender(MulticastSocket s, InetAddress group, Message message, int timer, KeyPair keyPair) {
         this.kill = false;
         this.s = s;
         this.group = group;
         this.broadcastMessage = message;
         this.timer = timer;
+        this.keyPair = keyPair;
     }
 
     public void run() {
         try {
             System.out.println("Thread Sender iniciada com sucesso.");
             while(!kill) {
+                broadcastMessage.setTime();
+                broadcastMessage.setSignedMessage(keyPair.sign(broadcastMessage.getBroadcastMessage()));
                 byte[] message = MessageSerializer.encode(broadcastMessage);
                 DatagramPacket messageOut = new DatagramPacket(message, message.length, group, 6789);
                 s.send(messageOut);
 
-                this.sleep(timer);
+                sleep(timer);
             }
         } catch (Exception e) {
             System.out.println("Erro na thread sender " + e);

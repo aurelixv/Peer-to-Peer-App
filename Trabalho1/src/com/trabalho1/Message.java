@@ -2,6 +2,7 @@ package com.trabalho1;
 
 import java.io.Serializable;
 import java.security.PublicKey;
+import java.time.LocalTime;
 
 public class Message implements Serializable {
     private String peerName;
@@ -10,44 +11,62 @@ public class Message implements Serializable {
     private byte[] signedMessage;
     private String command;
     private String message;
+    private LocalTime time;
 
     public Message() {
-        this.peerName = PeerInfo.name;
+        if(PeerInfo.isMaster) {
+            this.peerName = PeerInfo.master;
+        } else {
+            this.peerName = PeerInfo.name;
+        }
         this.peerPort = PeerInfo.port;
+        this.time = null;
     }
 
-    public void setPeerName(String name) {
-        this.peerName = name;
-    }
-    public void setPublicKey(PublicKey publicKey) {
+    void setPublicKey(PublicKey publicKey) {
         this.publicKey = publicKey;
     }
-    public void setSignedMessage(byte[] signedMessage) {
+    void setSignedMessage(byte[] signedMessage) {
         this.signedMessage = signedMessage;
     }
-    public void setCommand(String command) {
+    void setCommand(String command) {
         this.command = command;
     }
-    public void setMessage(String message) {
+    void setMessage(String message) {
         this.message = message;
     }
+    void setTime() {
+        this.time = LocalTime.now();
+    }
 
-    public String getPeerName() {
+    String getPeerName() {
         return this.peerName;
     }
-    public int getPeerPort() {
+    int getPeerPort() {
         return this.peerPort;
     }
-    public PublicKey getPublicKey() {
+    PublicKey getPublicKey() {
         return this.publicKey;
     }
-    public byte[] getSignedMessage() {
+    byte[] getSignedMessage() {
         return signedMessage;
     }
-    //public String getBroadcastMessage() {
-    //    return this.getPeerName() + this.getPeerPort();
-    //}
-    public String getCommand() {
+    String getCommand() {
         return this.command;
+    }
+    LocalTime getTime() {
+        return this.time;
+    }
+    String getBroadcastMessage() {
+        if(this.time == null) {
+            setTime();
+        }
+        return this.peerName + this.peerPort + this.time.toString();
+    }
+    String getUnicastMessage() {
+        if(this.time == null) {
+            setTime();
+        }
+        return this.peerName + this.peerPort + this.command + this.message + this.time.toString();
     }
 }

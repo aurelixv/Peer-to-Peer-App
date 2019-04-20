@@ -11,14 +11,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class UnicastServer extends Thread{
 
     private ServerSocket serverSocket;
-    private PrivateKey masterPrivateKey;
+    private KeyPair keyPair;
     private BlockingQueue<Integer> messageQueue;
     private ClockSyncAlgorithm clockSyncAlgorithm;
 
-    public UnicastServer(PrivateKey masterPrivateKey) {
+    public UnicastServer(KeyPair keyPair) {
         try {
             serverSocket = new ServerSocket(PeerInfo.port);
-            this.masterPrivateKey = masterPrivateKey;
+            this.keyPair = keyPair;
             this.messageQueue = new LinkedBlockingQueue<>();
             this.clockSyncAlgorithm = new ClockSyncAlgorithm(messageQueue);
             System.out.println("\nServidor unicast mestre inicializado.\n");
@@ -35,7 +35,7 @@ public class UnicastServer extends Thread{
                 InetAddress addr = client.getInetAddress();
                 int clientPort = client.getPort();
                 System.out.println("\nConexao com IP: " + addr + " Porta: " + clientPort + "\n");
-                new UnicastConnection(client, masterPrivateKey, messageQueue, clockSyncAlgorithm).start();
+                new UnicastConnection(client, keyPair, messageQueue, clockSyncAlgorithm).start();
                 clockSyncAlgorithm.incrementConnectedPeers();
             }
         } catch (IOException e) {

@@ -2,6 +2,7 @@ package com.trabalho1;
 
 import java.net.*;
 import java.io.*;
+import java.security.Key;
 import java.security.PublicKey;
 
 // IP: 228.5.6.7
@@ -15,16 +16,18 @@ public class MulticastHandler {
     private MulticastSender sender;
     private MulticastSender master;
     private WatchDog watchDog;
+    private KeyPair keyPair;
 
-    public MulticastHandler(String ip, Message message) {
+    public MulticastHandler(String ip, Message message, KeyPair keyPair) {
         this.broadcastMessage = message;
+        this.keyPair = keyPair;
 
         try {
             group = InetAddress.getByName(ip);
             s = new MulticastSocket(6789);
             s.joinGroup(group);
             listener = new MulticastListener(s);
-            sender = new MulticastSender(s, group, broadcastMessage, 5000);
+            sender = new MulticastSender(s, group, broadcastMessage, 5000, keyPair);
 
             System.out.println("Iniciando as threads do multicasting...");
             sender.start();
@@ -48,7 +51,7 @@ public class MulticastHandler {
     }
 
     public void createMaster(Message message) {
-        master = new MulticastSender(s, group, message, 1000);
+        master = new MulticastSender(s, group, message, 1000, keyPair);
         master.start();
     }
 
