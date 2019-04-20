@@ -11,13 +11,13 @@ public class MessageSignature {
             rsa.update(message.getBytes());
             return rsa.sign();
         } catch (NoSuchAlgorithmException e) {
-            System.out.print("Nao foi possivel carregar o algoritmo de assinatura digital ");
+            System.out.print("[ MessageSignature ] Nao foi possivel carregar o algoritmo de assinatura digital ");
             e.printStackTrace();
         } catch (InvalidKeyException e) {
-            System.out.print("Nao foi possivel inicializar o algoritmo de assinatura digital ");
+            System.out.print("[ MessageSignature ] Nao foi possivel inicializar o algoritmo de assinatura digital ");
             e.printStackTrace();
         } catch (SignatureException e) {
-            System.out.print("Nao foi possivel assinar a mensagem ");
+            System.out.print("[ MessageSignature ] Nao foi possivel assinar a mensagem ");
             e.printStackTrace();
         }
         return null;
@@ -30,13 +30,13 @@ public class MessageSignature {
             sig.update(message.getBytes());
             return sig.verify(signature);
         } catch (NoSuchAlgorithmException e) {
-            System.out.print("Nao foi possivel carregar o algoritmo de assinatura digital ");
+            System.out.print("[ MessageSignature ] Nao foi possivel carregar o algoritmo de assinatura digital ");
             e.printStackTrace();
         } catch (InvalidKeyException e) {
-            System.out.print("Nao foi possivel inicializar o algoritmo de assinatura digital ");
+            System.out.print("[ MessageSignature ] Nao foi possivel inicializar o algoritmo de assinatura digital ");
             e.printStackTrace();
         } catch (SignatureException e) {
-            System.out.print("Nao foi possivel verificar a mensagem ");
+            System.out.print("[ MessageSignature ] Nao foi possivel verificar a mensagem ");
             e.printStackTrace();
         }
         return false;

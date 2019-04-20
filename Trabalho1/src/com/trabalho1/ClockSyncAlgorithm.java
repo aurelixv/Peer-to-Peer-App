@@ -17,7 +17,7 @@ public class ClockSyncAlgorithm extends Thread {
     public void run() {
 
         // Esperando escravos se conectarem
-        while(connectedPeers < 3) {
+        while(connectedPeers < 1) {
             try {
                 System.out.println("[ ClockSync ] Esperando escravos se conectarem...");
                 sleep(1000);

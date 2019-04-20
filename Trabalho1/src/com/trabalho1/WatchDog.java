@@ -26,7 +26,7 @@ public class WatchDog extends Thread{
     public void run() {
 
         try {
-            System.out.println("WatchDog iniciado com sucesso.");
+            System.out.println("[ WatchDog ] WatchDog iniciado com sucesso.");
 
             LocalTime oldTime = LocalTime.now(clock);
 
@@ -38,14 +38,14 @@ public class WatchDog extends Thread{
 
                 if(message.getPeerName().equals(PeerInfo.master)) {
                     if(MessageSignature.verify(message.getBroadcastMessage(), message.getSignedMessage(), masterPublicKey)) {
-                        //System.out.println("MESTRE VIVO");
+                        System.out.println("[ WatchDog ] MESTRE VIVO");
                         oldTime = LocalTime.now(clock);
                     } else {
-                        System.out.println("MESTRE IMPOSTOR");
+                        System.out.println("[ WatchDog ] MESTRE IMPOSTOR");
                     }
                 }
                 if(LocalTime.now(clock).minus(PeerInfo.deltaT1, ChronoUnit.SECONDS).isAfter(oldTime)) {
-                    System.out.println("MESTRE MORREU");
+                    System.out.println("[ WatchDog ] MESTRE MORREU");
                     synchronized (this) {
                         this.notify();
                     }

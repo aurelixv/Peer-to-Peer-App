@@ -18,7 +18,7 @@ public class MulticastListener extends Thread {
 
     public void run() {
         try {
-            System.out.println("Thread Listener iniciada com sucesso.");
+            System.out.println("[ MulticastListener ] Thread Listener iniciada com sucesso.");
 
             while(!kill) {
                 byte[] buffer = new byte[1000];
@@ -42,7 +42,7 @@ public class MulticastListener extends Thread {
 //                        message.getPublicKey()));
             }
         } catch (Exception e){
-            System.out.println("Erro na thread listener " + e);
+            System.out.println("[ MulticastListener ] Erro na thread listener " + e);
             e.printStackTrace();
         }
     }

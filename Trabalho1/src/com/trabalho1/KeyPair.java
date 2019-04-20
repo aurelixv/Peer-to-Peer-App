@@ -1,11 +1,14 @@
 package com.trabalho1;
 
-import java.security.*;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
 
 /**
  *
  */
-public class KeyPair {
+class KeyPair {
 
     private PrivateKey privateKey;
     private PublicKey publicKey;
@@ -14,7 +17,7 @@ public class KeyPair {
         Cria um par de chaves com o algoritmo RSA de 1024 bits, para depois extrair as
         respectivas chaves privada e publica.
      */
-    public KeyPair() {
+    KeyPair() {
         try {
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
             // Gera um aleatorio por meio de um algoritmo seguro
@@ -24,14 +27,14 @@ public class KeyPair {
             privateKey = pair.getPrivate();
             publicKey = pair.getPublic();
         } catch (Exception e) {
-            System.err.println("Nao foi possivel criar par de chaves " + e.toString());
+            System.err.println("[ KeyPair ] Nao foi possivel criar par de chaves " + e.toString());
         }
     }
 
-    public PublicKey getPublicKey() {
+    PublicKey getPublicKey() {
         return this.publicKey;
     }
-    public byte[] sign(String message) {
+    byte[] sign(String message) {
         return MessageSignature.sign(message, this.privateKey);
     }
 }

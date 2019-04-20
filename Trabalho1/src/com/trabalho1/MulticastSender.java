@@ -24,7 +24,7 @@ public class MulticastSender extends Thread{
 
     public void run() {
         try {
-            System.out.println("Thread Sender iniciada com sucesso.");
+            System.out.println("[ MulticastSender ] Thread Sender iniciada com sucesso.");
             while(!kill) {
                 broadcastMessage.setTime();
                 broadcastMessage.setSignedMessage(keyPair.sign(broadcastMessage.getBroadcastMessage()));
@@ -35,7 +35,7 @@ public class MulticastSender extends Thread{
                 sleep(timer);
             }
         } catch (Exception e) {
-            System.out.println("Erro na thread sender " + e);
+            System.out.println("[ MulticastSender ] Erro na thread sender " + e);
             e.printStackTrace();
         }
     }

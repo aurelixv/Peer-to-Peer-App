@@ -16,7 +16,7 @@ class KnownPeers {
         if (!peers.containsKey(message.getPeerName())) {
             peers.put(message.getPeerName(), message);
             if(!message.getPeerName().equals(PeerInfo.master))
-                System.out.println(message.getPeerName() + " na porta " +
+                System.out.println("[ KnownPeers ] " + message.getPeerName() + " na porta " +
                         message.getPeerPort() + " adicionado com sucesso.");
         }
     }

@@ -29,7 +29,7 @@ public class MulticastHandler {
             listener = new MulticastListener(s);
             sender = new MulticastSender(s, group, broadcastMessage, 5000, keyPair);
 
-            System.out.println("Iniciando as threads do multicasting...");
+            System.out.println("[ MulticastHandler ] Iniciando as threads do multicasting...");
             sender.start();
             listener.start();
 
@@ -93,20 +93,20 @@ public class MulticastHandler {
     }
 
     public void endConnection() {
-        System.out.println("Encerrando conexoes...");
+        System.out.println("[ MulticastHandler ] Encerrando conexoes...");
 
         if(listener != null) {
-            System.out.println("Matando thread multicast listener...");
+            System.out.println("[ MulticastHandler ] Matando thread multicast listener...");
             killListener(true);
         }
 
         if(sender != null) {
-            System.out.println("Matando thread multicast sender...");
+            System.out.println("[ MulticastHandler ] Matando thread multicast sender...");
             killSender(true);
         }
 
         if(master != null) {
-            System.out.println("Matando thread multicast master...");
+            System.out.println("[ MulticastHandler ] Matando thread multicast master...");
             killMaster(true);
         }
 

@@ -42,7 +42,7 @@ public class UnicastConnection extends Thread {
 
                 // Espera a resposta do escravo
                 String response = in.readLine();
-                System.out.println("Resposta do escravo: " + response);
+                System.out.println("[ UnicastConnection ] Resposta do escravo: " + response);
                 messageQueue.add(Integer.parseInt(response));
 
                 synchronized (clockSyncAlgorithm) {
@@ -50,7 +50,7 @@ public class UnicastConnection extends Thread {
                 }
 
                 int adjustment = clockSyncAlgorithm.getAdjustment();
-                System.out.println("Ajuste a ser feito: " + adjustment);
+                System.out.println("[ UnicastConnection ] Ajuste a ser feito: " + adjustment);
                 message.setCommand("ajuste " + adjustment);
                 message.setSignedMessage(keyPair.sign(message.getUnicastMessage()));
                 encodedMessage = MessageSerializer.encode(message);
@@ -60,7 +60,7 @@ public class UnicastConnection extends Thread {
 
         } catch (IOException | InterruptedException e) {
             //e.printStackTrace();
-            System.out.println("Erro no socket.");
+            System.out.println("[ UnicastConnection ] Erro no socket.");
             clockSyncAlgorithm.decrementConnectedPeers();
         }
     }

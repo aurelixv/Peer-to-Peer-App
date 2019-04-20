@@ -16,7 +16,7 @@ public class Main {
 
         KnownPeers peers = multicastHandler.getListener().getPeers();
 
-        System.out.println("\n******Esperando peers se conectarem******\n");
+        System.out.println("\n[ Main ] ******Esperando peers se conectarem******\n");
         synchronized (multicastHandler.getListener()) {
             try {
                 multicastHandler.getListener().wait();
@@ -27,18 +27,18 @@ public class Main {
 
         while(!kill) {
 
-            System.out.println("\n\n\n******Peers conhecidos: " + peers.countPeers() + "******\n\n\n");
+            System.out.println("\n\n\n[ Main ] ******Peers conhecidos: " + peers.countPeers() + "******\n\n\n");
 
-            System.out.println("Iniciando eleicao...");
+            System.out.println("[ Main ] Iniciando eleicao...");
             peers.startElection();
 
             // Se for o mestre, vira um servidor
             if (PeerInfo.isMaster && !peers.isMasterSet()) {
-                System.out.println("\nVirando mestre...\n");
+                System.out.println("\n[ Main ] Virando mestre...\n");
                 Message masterMessage = new Message();
                 masterMessage.setPublicKey(keyPair.getPublicKey());
                 multicastHandler.createMaster(masterMessage);
-                System.out.println("\nIniciando servidor mestre...\n");
+                System.out.println("\n[ Main ] Iniciando servidor mestre...\n");
                 UnicastServer server = new UnicastServer(keyPair);
                 server.start();
                 try {
@@ -58,8 +58,8 @@ public class Main {
                     }
                 }
 
-                System.out.println("\nMestre na porta: " + peers.getPortFromPeer(PeerInfo.master) + "\n");
-                System.out.println("\nIniciando conexao com o mestre...\n");
+                System.out.println("\n[ Main ] Mestre na porta: " + peers.getPortFromPeer(PeerInfo.master) + "\n");
+                System.out.println("\n[ Main ] Iniciando conexao com o mestre...\n");
                 UnicastClient client = new UnicastClient(peers.getPortFromPeer(PeerInfo.master),
                         peers.getPublicKeyFromPeer(PeerInfo.master));
                 WatchDog watchDog = multicastHandler.createWatchDog(peers.getPublicKeyFromPeer(PeerInfo.master));

@@ -8,6 +8,6 @@ class PeerInfo {
     static String ip = "228.5.6.7";
     static String master = "Mestre";
     static boolean isMaster = false;
-    static int deltaT1 = 10;
+    static int deltaT1 = 2;
     static int deltaT2 = 5;
 }

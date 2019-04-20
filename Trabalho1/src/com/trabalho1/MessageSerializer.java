@@ -14,7 +14,7 @@ public class MessageSerializer {
             bos.close();
         }
         catch (Exception e) {
-            System.out.println("Erro no encode da mensagem " + e);
+            System.out.println("[ MessageSerializer ] Erro no encode da mensagem " + e);
         }
 
         return encoded;
@@ -30,7 +30,7 @@ public class MessageSerializer {
             in.close();
         }
         catch (Exception e) {
-            System.out.println("Erro no decode da mensagem " + e);
+            System.out.println("[ MessageSerializer ] Erro no decode da mensagem " + e);
         }
 
         return decoded;
