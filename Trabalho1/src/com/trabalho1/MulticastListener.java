@@ -10,7 +10,7 @@ public class MulticastListener extends Thread {
     private KnownPeers peers;
     private boolean kill;
 
-    public MulticastListener(MulticastSocket s) {
+    MulticastListener(MulticastSocket s) {
         this.s = s;
         this.peers = new KnownPeers();
         this.kill = false;
@@ -47,11 +47,11 @@ public class MulticastListener extends Thread {
         }
     }
 
-    public void killThread(boolean kill) {
+    void killThread(boolean kill) {
         this.kill = kill;
     }
 
-    public KnownPeers getPeers() {
+    KnownPeers getPeers() {
         return this.peers;
     }
 

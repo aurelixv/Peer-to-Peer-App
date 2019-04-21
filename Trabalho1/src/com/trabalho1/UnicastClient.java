@@ -3,7 +3,7 @@ package com.trabalho1;
 import java.io.*;
 import java.net.Socket;
 import java.security.PublicKey;
-import java.util.Random;
+import java.time.LocalTime;
 
 public class UnicastClient extends Thread {
 
@@ -12,12 +12,14 @@ public class UnicastClient extends Thread {
     private int port;
     private boolean kill;
     private PublicKey masterPublicKey;
+    private Double adjustment;
 
-    public UnicastClient(int port, PublicKey masterPublicKey) {
+    UnicastClient(int port, PublicKey masterPublicKey) {
         this.hostName = "127.0.0.1";
         this.port = port;
         this.kill = false;
         this.masterPublicKey = masterPublicKey;
+        this.adjustment = 0.0;
     }
 
     public void run() {
@@ -43,12 +45,13 @@ public class UnicastClient extends Thread {
                             masterPublicKey)) {
                         System.out.println("[ UnicastClient ] Mestre enviou o comando: " + message.getCommand());
                         if(message.getCommand().equals("tempo")) {
-                            int clock = new Random().nextInt() % 10;
+                            LocalTime clock = getTime();
                             System.out.println("[ UnicastClient ] Enviando tempo local para o mestre: " + clock);
                             out.println(clock);
                         } else {
                             System.out.println("[ UnicastClient ] Ajuste requisitado pelo mestre: " +
-                                    message.getCommand());
+                                    message.getMessage());
+                            this.adjustment += Double.parseDouble(message.getMessage());
                         }
                     } else {
                         System.out.println("[ UnicastClient ] Erro ao validar assinatura digital do mestre.");
@@ -69,8 +72,12 @@ public class UnicastClient extends Thread {
         }
     }
 
-    public void killThread(boolean kill) {
+    void killThread(boolean kill) {
         this.kill = kill;
+    }
+
+    private LocalTime getTime() {
+        return LocalTime.now().plusSeconds(this.adjustment.longValue());
     }
 
 }

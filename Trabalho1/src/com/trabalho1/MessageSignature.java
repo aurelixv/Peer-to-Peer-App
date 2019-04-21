@@ -2,8 +2,8 @@ package com.trabalho1;
 
 import java.security.*;
 
-public class MessageSignature {
-    public static byte[] sign(String message, PrivateKey privateKey) {
+class MessageSignature {
+    static byte[] sign(String message, PrivateKey privateKey) {
         Signature rsa;
         try {
             rsa = Signature.getInstance("SHA1withRSA");
@@ -22,7 +22,7 @@ public class MessageSignature {
         }
         return null;
     }
-    public static boolean verify(String message, byte[] signature, PublicKey publicKey) {
+    static boolean verify(String message, byte[] signature, PublicKey publicKey) {
         Signature sig;
         try {
             sig = Signature.getInstance("SHA1withRSA");

@@ -25,10 +25,6 @@ class KnownPeers {
         return peers.containsKey(PeerInfo.master);
     }
 
-    boolean isMaster() {
-        return getPortFromPeer(PeerInfo.name) == getPortFromPeer(PeerInfo.master);
-    }
-
     PublicKey getPublicKeyFromPeer(String peerName) {
         if(peers.containsKey(peerName)) {
             return peers.get(peerName).getPublicKey();
@@ -73,7 +69,6 @@ class KnownPeers {
 
         if(Integer.parseInt(PeerInfo.name.substring(PeerInfo.name.length() - 1)) >
                 Integer.parseInt(masterName.substring(masterName.length() - 1))) {
-            masterName = PeerInfo.name;
             PeerInfo.isMaster = true;
         }
     }

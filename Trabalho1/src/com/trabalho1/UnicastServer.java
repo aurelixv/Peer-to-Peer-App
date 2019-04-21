@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalTime;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -11,10 +12,10 @@ public class UnicastServer extends Thread{
 
     private ServerSocket serverSocket;
     private KeyPair keyPair;
-    private BlockingQueue<Integer> messageQueue;
+    private BlockingQueue<LocalTime> messageQueue;
     private ClockSyncAlgorithm clockSyncAlgorithm;
 
-    public UnicastServer(KeyPair keyPair) {
+    UnicastServer(KeyPair keyPair) {
         try {
             serverSocket = new ServerSocket(PeerInfo.port);
             this.keyPair = keyPair;

@@ -1,17 +1,19 @@
 package com.trabalho1;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.concurrent.BlockingQueue;
 
 public class ClockSyncAlgorithm extends Thread {
 
-    private BlockingQueue<Integer> messageQueue;
+    private BlockingQueue<LocalTime> messageQueue;
     private int connectedPeers;
-    public int adjustment;
+    private double adjustment;
 
-    public ClockSyncAlgorithm(BlockingQueue<Integer> messageQueue) {
+    ClockSyncAlgorithm(BlockingQueue<LocalTime> messageQueue) {
         this.messageQueue = messageQueue;
         this.connectedPeers = 0;
-        this.adjustment = 0;
+        this.adjustment = 0.0;
     }
 
     public void run() {
@@ -28,33 +30,45 @@ public class ClockSyncAlgorithm extends Thread {
 
         while(true) {
             int cont = 0;
-            int sum = 0;
-            while (cont < connectedPeers) {
+            double sum = 0;
+            while (cont < getConnectedPeers()) {
                 try {
-                    sum += messageQueue.take();
+                    LocalTime slave = messageQueue.take();
+                    sum += Duration.between(slave, LocalTime.now()).getSeconds();
                     cont += 1;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            adjustment = sum / connectedPeers;
+            adjustment = sum / (cont + 2);
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             synchronized (this) {
                 this.notifyAll();
             }
         }
     }
 
-    public void incrementConnectedPeers() {
-        this.connectedPeers += 1;
-    }
 
-    public int getAdjustment() {
+    double getAdjustment() {
         return this.adjustment;
     }
 
-    public void decrementConnectedPeers() {
+    synchronized void incrementConnectedPeers() {
+        this.connectedPeers += 1;
+    }
+
+    synchronized void decrementConnectedPeers() {
         if(connectedPeers > 0) {
             this.connectedPeers -= 1;
         }
     }
+
+    private synchronized int getConnectedPeers() {
+        return this.connectedPeers;
+    }
+
 }

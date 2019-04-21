@@ -2,8 +2,8 @@ package com.trabalho1;
 
 import java.io.*;
 
-public class MessageSerializer {
-    public static byte[] encode(Message message) {
+class MessageSerializer {
+    static byte[] encode(Message message) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] encoded = null;
 
@@ -20,7 +20,7 @@ public class MessageSerializer {
         return encoded;
     }
 
-    public static Message decode(byte[] message) {
+    static Message decode(byte[] message) {
         ByteArrayInputStream bis = new ByteArrayInputStream(message);
         Message decoded = null;
 

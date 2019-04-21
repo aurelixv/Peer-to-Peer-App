@@ -13,7 +13,7 @@ public class MulticastSender extends Thread{
     private int timer;
     private KeyPair keyPair;
 
-    public MulticastSender(MulticastSocket s, InetAddress group, Message message, int timer, KeyPair keyPair) {
+    MulticastSender(MulticastSocket s, InetAddress group, Message message, int timer, KeyPair keyPair) {
         this.kill = false;
         this.s = s;
         this.group = group;
@@ -40,7 +40,7 @@ public class MulticastSender extends Thread{
         }
     }
 
-    public void killThread(boolean kill) {
+    void killThread(boolean kill) {
         this.kill = kill;
     }
 

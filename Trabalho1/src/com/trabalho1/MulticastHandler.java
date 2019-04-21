@@ -1,25 +1,23 @@
 package com.trabalho1;
 
-import java.net.*;
-import java.io.*;
-import java.security.Key;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.net.SocketException;
 import java.security.PublicKey;
 
 // IP: 228.5.6.7
 
 public class MulticastHandler {
 
-    private Message broadcastMessage;
     private MulticastSocket s;
     private InetAddress group;
     private MulticastListener listener;
     private MulticastSender sender;
     private MulticastSender master;
-    private WatchDog watchDog;
     private KeyPair keyPair;
 
-    public MulticastHandler(String ip, Message message, KeyPair keyPair) {
-        this.broadcastMessage = message;
+    MulticastHandler(String ip, Message message, KeyPair keyPair) {
         this.keyPair = keyPair;
 
         try {
@@ -27,7 +25,7 @@ public class MulticastHandler {
             s = new MulticastSocket(6789);
             s.joinGroup(group);
             listener = new MulticastListener(s);
-            sender = new MulticastSender(s, group, broadcastMessage, 5000, keyPair);
+            sender = new MulticastSender(s, group, message, 5000, keyPair);
 
             System.out.println("[ MulticastHandler ] Iniciando as threads do multicasting...");
             sender.start();
@@ -40,17 +38,17 @@ public class MulticastHandler {
         }
     }
 
-    public MulticastListener getListener() {
+    MulticastListener getListener() {
         return listener;
     }
 
-    public WatchDog createWatchDog(PublicKey masterPublicKey) {
-        watchDog = new WatchDog(s, masterPublicKey);
+    WatchDog createWatchDog(PublicKey masterPublicKey) {
+        WatchDog watchDog = new WatchDog(s, masterPublicKey);
         watchDog.start();
         return watchDog;
     }
 
-    public void createMaster(Message message) {
+    void createMaster(Message message) {
         master = new MulticastSender(s, group, message, 1000, keyPair);
         master.start();
     }
@@ -59,7 +57,7 @@ public class MulticastHandler {
         return sender;
     }
 
-    public void killMaster(boolean kill) {
+    private void killMaster(boolean kill) {
         if(kill) {
             try {
                 master.killThread(true);
@@ -70,7 +68,7 @@ public class MulticastHandler {
         }
     }
 
-    public void killListener(boolean kill) {
+    private void killListener(boolean kill) {
         if(kill) {
             try {
                 listener.killThread(true);
@@ -81,7 +79,7 @@ public class MulticastHandler {
         }
     }
 
-    public void killSender(boolean kill) {
+    private void killSender(boolean kill) {
         if(kill) {
             try {
                 sender.killThread(true);
@@ -92,7 +90,7 @@ public class MulticastHandler {
         }
     }
 
-    public void endConnection() {
+    void endConnection() {
         System.out.println("[ MulticastHandler ] Encerrando conexoes...");
 
         if(listener != null) {

@@ -16,7 +16,7 @@ public class WatchDog extends Thread{
     private boolean kill;
     private PublicKey masterPublicKey;
 
-    public WatchDog(MulticastSocket s, PublicKey masterPublicKey) {
+    WatchDog(MulticastSocket s, PublicKey masterPublicKey) {
         this.s = s;
         this.kill = false;
         this.clock = Clock.systemDefaultZone();
@@ -37,7 +37,8 @@ public class WatchDog extends Thread{
                 Message message = decode(messageIn.getData());
 
                 if(message.getPeerName().equals(PeerInfo.master)) {
-                    if(MessageSignature.verify(message.getBroadcastMessage(), message.getSignedMessage(), masterPublicKey)) {
+                    if(MessageSignature.verify(message.getBroadcastMessage(),
+                            message.getSignedMessage(), masterPublicKey)) {
                         System.out.println("[ WatchDog ] MESTRE VIVO");
                         oldTime = LocalTime.now(clock);
                     } else {
@@ -46,9 +47,6 @@ public class WatchDog extends Thread{
                 }
                 if(LocalTime.now(clock).minus(PeerInfo.deltaT1, ChronoUnit.SECONDS).isAfter(oldTime)) {
                     System.out.println("[ WatchDog ] MESTRE MORREU");
-                    synchronized (this) {
-                        this.notify();
-                    }
                     kill = true;
                 }
 

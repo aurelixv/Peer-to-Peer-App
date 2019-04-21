@@ -69,4 +69,7 @@ public class Message implements Serializable {
         }
         return this.peerName + this.peerPort + this.command + this.message + this.time.toString();
     }
+    String getMessage() {
+        return this.message;
+    }
 }

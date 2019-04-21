@@ -2,17 +2,18 @@ package com.trabalho1;
 
 import java.io.*;
 import java.net.Socket;
+import java.time.LocalTime;
 import java.util.concurrent.BlockingQueue;
 
 public class UnicastConnection extends Thread {
 
     private Socket client;
     private KeyPair keyPair;
-    private BlockingQueue<Integer> messageQueue;
-    private ClockSyncAlgorithm clockSyncAlgorithm;
+    private final BlockingQueue<LocalTime> messageQueue;
+    private final ClockSyncAlgorithm clockSyncAlgorithm;
 
-    public UnicastConnection(Socket client, KeyPair keyPair,
-                             BlockingQueue<Integer> messageQueue, ClockSyncAlgorithm clockSyncAlgorithm) {
+    UnicastConnection(Socket client, KeyPair keyPair,
+                      BlockingQueue<LocalTime> messageQueue, ClockSyncAlgorithm clockSyncAlgorithm) {
         this.keyPair = keyPair;
         this.client = client;
         this.messageQueue = messageQueue;
@@ -43,15 +44,19 @@ public class UnicastConnection extends Thread {
                 // Espera a resposta do escravo
                 String response = in.readLine();
                 System.out.println("[ UnicastConnection ] Resposta do escravo: " + response);
-                messageQueue.add(Integer.parseInt(response));
+
+                messageQueue.add(LocalTime.parse(response));
+
+                //System.out.println("Enviado " + response);
 
                 synchronized (clockSyncAlgorithm) {
                     clockSyncAlgorithm.wait();
                 }
 
-                int adjustment = clockSyncAlgorithm.getAdjustment();
+                double adjustment = clockSyncAlgorithm.getAdjustment();
                 System.out.println("[ UnicastConnection ] Ajuste a ser feito: " + adjustment);
-                message.setCommand("ajuste " + adjustment);
+                message.setCommand("ajuste ");
+                message.setMessage(Double.toString(adjustment));
                 message.setSignedMessage(keyPair.sign(message.getUnicastMessage()));
                 encodedMessage = MessageSerializer.encode(message);
                 out.writeInt(encodedMessage.length);
@@ -59,8 +64,8 @@ public class UnicastConnection extends Thread {
             }
 
         } catch (IOException | InterruptedException e) {
-            //e.printStackTrace();
-            System.out.println("[ UnicastConnection ] Erro no socket.");
+            e.printStackTrace();
+            System.out.println("[ UnicastConnection ] Erro no socket. " + e);
             clockSyncAlgorithm.decrementConnectedPeers();
         }
     }
