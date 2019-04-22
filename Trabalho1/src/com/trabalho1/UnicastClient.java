@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.security.PublicKey;
 import java.time.LocalTime;
+import java.util.Arrays;
 
 public class UnicastClient extends Thread {
 
@@ -40,21 +41,23 @@ public class UnicastClient extends Thread {
                 try {
                     byte[] encodedMessage = new byte[in.readInt()];
                     in.readFully(encodedMessage, 0, encodedMessage.length);
-                    Message message = MessageSerializer.decode(encodedMessage);
-                    if (MessageSignature.verify(message.getUnicastMessage(), message.getSignedMessage(),
-                            masterPublicKey)) {
-                        System.out.println("[ UnicastClient ] Mestre enviou o comando: " + message.getCommand());
-                        if(message.getCommand().equals("tempo")) {
+                    Message message = (Message)MessageSerializer.decode(encodedMessage);
+                    MessageContent messageContent = message.getMessageContent();
+                    if (MessageSignature.verify(Arrays.toString(MessageSerializer.encode(messageContent)),
+                            message.getSignedMessageContent(), masterPublicKey)) {
+                        System.out.println("[ UnicastClient ] Mestre enviou o comando: " + messageContent.getCommand());
+                        if(messageContent.getCommand().equals("tempo")) {
                             LocalTime clock = getTime();
                             System.out.println("[ UnicastClient ] Enviando tempo local para o mestre: " + clock);
                             out.println(clock);
                         } else {
                             System.out.println("[ UnicastClient ] Ajuste requisitado pelo mestre: " +
-                                    message.getMessage());
-                            this.adjustment += Double.parseDouble(message.getMessage());
+                                    messageContent.getMessage());
+                            this.adjustment += Double.parseDouble(messageContent.getMessage());
                         }
                     } else {
                         System.out.println("[ UnicastClient ] Erro ao validar assinatura digital do mestre.");
+                        System.out.println("\n" + Arrays.toString(message.getSignedMessageContent()) + "\n");
                     }
                 } catch (Exception e) {
                     System.out.println("[ UnicastClient ] Erro na comunicacao com o mestre " + e);

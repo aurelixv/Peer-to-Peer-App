@@ -3,6 +3,7 @@ package com.trabalho1;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.Arrays;
 
 public class MulticastSender extends Thread{
 
@@ -26,8 +27,9 @@ public class MulticastSender extends Thread{
         try {
             System.out.println("[ MulticastSender ] Thread Sender iniciada com sucesso.");
             while(!kill) {
-                broadcastMessage.setTime();
-                broadcastMessage.setSignedMessage(keyPair.sign(broadcastMessage.getBroadcastMessage()));
+                broadcastMessage.getMessageContent().setTime();
+                broadcastMessage.setSignedMessage(
+                        keyPair.sign(Arrays.toString(MessageSerializer.encode(broadcastMessage.getMessageContent()))));
                 byte[] message = MessageSerializer.encode(broadcastMessage);
                 DatagramPacket messageOut = new DatagramPacket(message, message.length, group, 6789);
                 s.send(messageOut);

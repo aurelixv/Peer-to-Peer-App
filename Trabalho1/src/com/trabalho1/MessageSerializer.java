@@ -3,7 +3,7 @@ package com.trabalho1;
 import java.io.*;
 
 class MessageSerializer {
-    static byte[] encode(Message message) {
+    static byte[] encode(Object message) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] encoded = null;
 
@@ -20,13 +20,13 @@ class MessageSerializer {
         return encoded;
     }
 
-    static Message decode(byte[] message) {
+    static Object decode(byte[] message) {
         ByteArrayInputStream bis = new ByteArrayInputStream(message);
-        Message decoded = null;
+        Object decoded = null;
 
         try {
             ObjectInputStream in = new ObjectInputStream(bis);
-            decoded = (Message)in.readObject();
+            decoded = in.readObject();
             in.close();
         }
         catch (Exception e) {

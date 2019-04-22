@@ -13,8 +13,8 @@ public class Main {
 
         // Cria a mensagem de descoberta multicasting do peer
         Message broadcastMessage = new Message();
-        broadcastMessage.setPublicKey(keyPair.getPublicKey());
-        broadcastMessage.setSignedMessage(keyPair.sign(broadcastMessage.getBroadcastMessage()));
+        broadcastMessage.getMessageContent().setPublicKey(keyPair.getPublicKey());
+        //broadcastMessage.setSignedMessage(keyPair.sign(broadcastMessage.getMessageContent().toString()));
 
         // Cria o responsavel por gerenciar as comunicacoes multicasting do peer
         MulticastHandler multicastHandler = new MulticastHandler(PeerInfo.ip, broadcastMessage, keyPair);
@@ -44,7 +44,8 @@ public class Main {
             if (PeerInfo.isMaster && !peers.isMasterSet()) {
                 System.out.println("\n[ Main ] Virando mestre...\n");
                 Message masterMessage = new Message();
-                masterMessage.setPublicKey(keyPair.getPublicKey());
+                MessageContent masterMessageContent = masterMessage.getMessageContent();
+                masterMessageContent.setPublicKey(keyPair.getPublicKey());
                 multicastHandler.createMaster(masterMessage);
                 System.out.println("\n[ Main ] Iniciando servidor mestre...\n");
                 UnicastServer server = new UnicastServer(keyPair);

@@ -3,6 +3,7 @@ package com.trabalho1;
 import java.io.*;
 import java.net.Socket;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 
 public class UnicastConnection extends Thread {
@@ -32,11 +33,13 @@ public class UnicastConnection extends Thread {
 
             while(true) {
                 Message message = new Message();
-                message.setCommand("tempo");
-                message.setTime();
-                message.setSignedMessage(keyPair.sign(message.getUnicastMessage()));
+                MessageContent messageContent = message.getMessageContent();
+                messageContent.setCommand("tempo");
+                messageContent.setTime();
+                message.setSignedMessage(keyPair.sign(Arrays.toString(MessageSerializer.encode(messageContent))));
                 byte [] encodedMessage = MessageSerializer.encode(message);
                 // Envia para o escravo a solicitacao de tempo
+                System.out.println("\n" + Arrays.toString(message.getSignedMessageContent()) + "\n");
                 out.writeInt(encodedMessage.length);
                 out.write(encodedMessage);
                 sleep(PeerInfo.deltaT2 * 1000);
@@ -55,9 +58,9 @@ public class UnicastConnection extends Thread {
 
                 double adjustment = clockSyncAlgorithm.getAdjustment();
                 System.out.println("[ UnicastConnection ] Ajuste a ser feito: " + adjustment);
-                message.setCommand("ajuste ");
-                message.setMessage(Double.toString(adjustment));
-                message.setSignedMessage(keyPair.sign(message.getUnicastMessage()));
+                messageContent.setCommand("ajuste ");
+                messageContent.setMessage(Double.toString(adjustment));
+                message.setSignedMessage(keyPair.sign(Arrays.toString(MessageSerializer.encode(messageContent))));
                 encodedMessage = MessageSerializer.encode(message);
                 out.writeInt(encodedMessage.length);
                 out.write(encodedMessage);

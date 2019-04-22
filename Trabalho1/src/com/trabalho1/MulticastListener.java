@@ -24,10 +24,10 @@ public class MulticastListener extends Thread {
                 byte[] buffer = new byte[1000];
                 DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
                 s.receive(messageIn);
-                Message message = decode(messageIn.getData());
+                Message message = (Message)decode(messageIn.getData());
 
-                if(message.getPeerPort() != PeerInfo.port) {
-                    peers.verifyPeer(message);
+                if(message.getMessageContent().getPeerPort() != PeerInfo.port) {
+                    peers.verifyPeer(message.getMessageContent());
                 }
 
                 if(peers.countPeers() >= 3) {
@@ -36,10 +36,6 @@ public class MulticastListener extends Thread {
                     }
                 }
 
-//                System.out.println(message.getPeerName() + " na porta " + message.getPeerPort());
-//                System.out.println("Assinatura valida: " + MessageSignature.verify(message.getBroadcastMessage(),
-//                        message.getSignedMessage(),
-//                        message.getPublicKey()));
             }
         } catch (Exception e){
             System.out.println("[ MulticastListener ] Erro na thread listener " + e);

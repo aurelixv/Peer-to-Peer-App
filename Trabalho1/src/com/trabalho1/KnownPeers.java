@@ -6,18 +6,18 @@ import java.util.Map;
 
 class KnownPeers {
 
-    private Map<String, Message> peers;
+    private Map<String, MessageContent> peers;
 
     KnownPeers() {
         peers = new Hashtable<>();
     }
 
-    void verifyPeer(Message message) {
-        if (!peers.containsKey(message.getPeerName())) {
-            peers.put(message.getPeerName(), message);
-            if(!message.getPeerName().equals(PeerInfo.master))
-                System.out.println("[ KnownPeers ] " + message.getPeerName() + " na porta " +
-                        message.getPeerPort() + " adicionado com sucesso.");
+    void verifyPeer(MessageContent messageContent) {
+        if (!peers.containsKey(messageContent.getPeerName())) {
+            peers.put(messageContent.getPeerName(), messageContent);
+            if(!messageContent.getPeerName().equals(PeerInfo.master))
+                System.out.println("[ KnownPeers ] " + messageContent.getPeerName() + " na porta " +
+                        messageContent.getPeerPort() + " adicionado com sucesso.");
         }
     }
 
@@ -47,7 +47,7 @@ class KnownPeers {
     }
 
     void removePeer(int port) {
-        Map<String, Message> aux = new Hashtable<>(peers);
+        Map<String, MessageContent> aux = new Hashtable<>(peers);
         for (String i: aux.keySet()) {
             if(peers.get(i).getPeerPort() == port) {
                 peers.remove(i);

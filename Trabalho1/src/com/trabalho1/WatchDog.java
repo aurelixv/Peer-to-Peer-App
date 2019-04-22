@@ -6,6 +6,7 @@ import java.security.PublicKey;
 import java.time.Clock;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 
 import static com.trabalho1.MessageSerializer.decode;
 
@@ -34,11 +35,12 @@ public class WatchDog extends Thread{
                 byte[] buffer = new byte[1000];
                 DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
                 s.receive(messageIn);
-                Message message = decode(messageIn.getData());
+                Message message = (Message)decode(messageIn.getData());
+                MessageContent messageContent = message.getMessageContent();
 
-                if(message.getPeerName().equals(PeerInfo.master)) {
-                    if(MessageSignature.verify(message.getBroadcastMessage(),
-                            message.getSignedMessage(), masterPublicKey)) {
+                if(messageContent.getPeerName().equals(PeerInfo.master)) {
+                    if(MessageSignature.verify(Arrays.toString(MessageSerializer.encode(messageContent)),
+                            message.getSignedMessageContent(), masterPublicKey)) {
                         System.out.println("[ WatchDog ] MESTRE VIVO");
                         oldTime = LocalTime.now(clock);
                     } else {
