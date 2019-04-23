@@ -22,9 +22,13 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-#IntelliJ bullshit
+# IntelliJ bullshit
 *.xml
 */.idea/*
 */out/*
 *.iml
 
+# Apple bullshit
+.DS_Store
+
+Peer-to-Peer-App/src/META-INF

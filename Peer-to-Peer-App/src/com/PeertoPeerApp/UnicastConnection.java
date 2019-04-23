@@ -26,7 +26,6 @@ public class UnicastConnection extends Thread {
 
         DataOutputStream out;
         BufferedReader in;
-        String input;
 
         try {
             out = new DataOutputStream(client.getOutputStream());
