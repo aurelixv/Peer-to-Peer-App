@@ -1,4 +1,4 @@
-package com.trabalho1;
+package com.PeertoPeerApp;
 
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
-import static com.trabalho1.MessageSerializer.decode;
+import static com.PeertoPeerApp.MessageSerializer.decode;
 
 public class WatchDog extends Thread{
 

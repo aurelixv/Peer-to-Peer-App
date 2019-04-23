@@ -1,6 +1,4 @@
-package com.trabalho1;
-
-import java.time.LocalTime;
+package com.PeertoPeerApp;
 
 class PeerInfo {
     static String name;

@@ -1,6 +1,5 @@
-package com.trabalho1;
+package com.PeertoPeerApp;
 
-import java.time.Duration;
 import java.time.LocalTime;
 import java.util.concurrent.BlockingQueue;
 

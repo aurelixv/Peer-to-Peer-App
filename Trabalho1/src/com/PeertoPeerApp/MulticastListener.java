@@ -1,8 +1,8 @@
-package com.trabalho1;
+package com.PeertoPeerApp;
 
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
-import static com.trabalho1.MessageSerializer.*;
+import static com.PeertoPeerApp.MessageSerializer.*;
 
 public class MulticastListener extends Thread {
 

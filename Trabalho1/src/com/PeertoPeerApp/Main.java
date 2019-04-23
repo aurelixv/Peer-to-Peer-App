@@ -1,4 +1,4 @@
-package com.trabalho1;
+package com.PeertoPeerApp;
 
 public class Main {
     public static void main(String[] args) {

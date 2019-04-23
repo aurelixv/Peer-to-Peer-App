@@ -1,4 +1,4 @@
-package com.trabalho1;
+package com.PeertoPeerApp;
 
 import java.io.Serializable;
 import java.security.PublicKey;
