@@ -2,6 +2,7 @@ package com.trabalho1;
 
 import java.io.*;
 import java.net.Socket;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
@@ -39,16 +40,21 @@ public class UnicastConnection extends Thread {
                 message.setSignedMessage(keyPair.sign(Arrays.toString(MessageSerializer.encode(messageContent))));
                 byte [] encodedMessage = MessageSerializer.encode(message);
                 // Envia para o escravo a solicitacao de tempo
-                System.out.println("\n" + Arrays.toString(message.getSignedMessageContent()) + "\n");
                 out.writeInt(encodedMessage.length);
                 out.write(encodedMessage);
-                sleep(PeerInfo.deltaT2 * 1000);
+                LocalTime sentTime = LocalTime.now();
 
                 // Espera a resposta do escravo
                 String response = in.readLine();
-                System.out.println("[ UnicastConnection ] Resposta do escravo: " + response);
+                long rtt = Duration.between(sentTime, LocalTime.now()).getNano();
+                System.out.println("[ UnicastConnection ] Resposta do escravo: " + response + " RTT: "  + rtt);
 
-                messageQueue.add(LocalTime.parse(response));
+                LocalTime estimated = LocalTime.parse(response).plusNanos(rtt/2);
+                System.out.println("[ UnicastConnection ] Estimado: " + estimated);
+
+                sleep(PeerInfo.deltaT2 * 1000);
+
+                messageQueue.add(estimated);
 
                 //System.out.println("Enviado " + response);
 
@@ -56,10 +62,12 @@ public class UnicastConnection extends Thread {
                     clockSyncAlgorithm.wait();
                 }
 
-                double adjustment = clockSyncAlgorithm.getAdjustment();
+                long meanTime = clockSyncAlgorithm.getMeanTime();
+                long adjustment = meanTime - estimated.getNano();
                 System.out.println("[ UnicastConnection ] Ajuste a ser feito: " + adjustment);
                 messageContent.setCommand("ajuste ");
-                messageContent.setMessage(Double.toString(adjustment));
+                messageContent.setTime();
+                messageContent.setMessage(Long.toString(adjustment));
                 message.setSignedMessage(keyPair.sign(Arrays.toString(MessageSerializer.encode(messageContent))));
                 encodedMessage = MessageSerializer.encode(message);
                 out.writeInt(encodedMessage.length);

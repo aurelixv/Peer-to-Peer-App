@@ -13,14 +13,14 @@ public class UnicastClient extends Thread {
     private int port;
     private boolean kill;
     private PublicKey masterPublicKey;
-    private Double adjustment;
+    private long adjustment;
 
     UnicastClient(int port, PublicKey masterPublicKey) {
         this.hostName = "127.0.0.1";
         this.port = port;
         this.kill = false;
         this.masterPublicKey = masterPublicKey;
-        this.adjustment = 0.0;
+        this.adjustment = 0;
     }
 
     public void run() {
@@ -53,11 +53,10 @@ public class UnicastClient extends Thread {
                         } else {
                             System.out.println("[ UnicastClient ] Ajuste requisitado pelo mestre: " +
                                     messageContent.getMessage());
-                            this.adjustment += Double.parseDouble(messageContent.getMessage());
+                            this.adjustment += Long.parseLong(messageContent.getMessage());
                         }
                     } else {
                         System.out.println("[ UnicastClient ] Erro ao validar assinatura digital do mestre.");
-                        System.out.println("\n" + Arrays.toString(message.getSignedMessageContent()) + "\n");
                     }
                 } catch (Exception e) {
                     System.out.println("[ UnicastClient ] Erro na comunicacao com o mestre " + e);
@@ -80,7 +79,7 @@ public class UnicastClient extends Thread {
     }
 
     private LocalTime getTime() {
-        return LocalTime.now().plusSeconds(this.adjustment.longValue());
+        return LocalTime.now().plusNanos(this.adjustment);
     }
 
 }

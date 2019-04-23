@@ -14,7 +14,6 @@ public class Main {
         // Cria a mensagem de descoberta multicasting do peer
         Message broadcastMessage = new Message();
         broadcastMessage.getMessageContent().setPublicKey(keyPair.getPublicKey());
-        //broadcastMessage.setSignedMessage(keyPair.sign(broadcastMessage.getMessageContent().toString()));
 
         // Cria o responsavel por gerenciar as comunicacoes multicasting do peer
         MulticastHandler multicastHandler = new MulticastHandler(PeerInfo.ip, broadcastMessage, keyPair);

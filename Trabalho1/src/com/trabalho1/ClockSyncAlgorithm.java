@@ -8,12 +8,14 @@ public class ClockSyncAlgorithm extends Thread {
 
     private BlockingQueue<LocalTime> messageQueue;
     private int connectedPeers;
-    private double adjustment;
+    private long meanTime;
+    private long adjustment;
 
     ClockSyncAlgorithm(BlockingQueue<LocalTime> messageQueue) {
         this.messageQueue = messageQueue;
         this.connectedPeers = 0;
-        this.adjustment = 0.0;
+        this.meanTime = 0;
+        this.adjustment = 0;
     }
 
     public void run() {
@@ -30,17 +32,21 @@ public class ClockSyncAlgorithm extends Thread {
 
         while(getConnectedPeers() > 0) {
             int cont = 0;
-            double sum = 0;
+            long sum = 0;
             while (cont < getConnectedPeers()) {
                 try {
                     LocalTime slave = messageQueue.take();
-                    sum += Duration.between(slave, LocalTime.now()).getSeconds();
+                    sum += slave.getNano();
                     cont += 1;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            adjustment = sum / (cont + 2);
+            LocalTime masterTime = LocalTime.now().plusNanos(adjustment);
+            sum += masterTime.getNano();
+            meanTime = sum / (cont + 2);
+            adjustment = meanTime - masterTime.getNano();
+            System.out.println("[ ClockSync ] Ajuste do mestre: " + adjustment);
             try {
                 sleep(100);
             } catch (InterruptedException e) {
@@ -53,8 +59,8 @@ public class ClockSyncAlgorithm extends Thread {
     }
 
 
-    double getAdjustment() {
-        return this.adjustment;
+    long getMeanTime() {
+        return this.meanTime;
     }
 
     synchronized void incrementConnectedPeers() {
