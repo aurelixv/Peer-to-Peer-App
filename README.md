@@ -1,8 +1,13 @@
 # Peer to Peer clients
 
-Todos os peers de descobrem atraves da comunicacao multicast.
+- [x] Todos os peers se descobrem através da comunicação em grupo (multicast).
 
-Os peers elegem um mestre e trocam seus horarios por unicast.
+- [x] Os peers elegem um mestre e fazem ajustes em seus horários por comunicação única (unicast).
 
-1565737 - Aurelio Vinicius Cabral Funes
+- [x] O mestre garante a sua autenticidade por meio da assinatura digital por par de chaves assimétricas (private/public key).
 
+- [x] Caso o mestre pare de responder, outro peer é eleito como mestre.
+
+## Trabalho para a matéria de Sistemas Distribuídos - UTFPR
+
+### Aurelio Vinicius Cabral Funes - 23/04/2019
